@@ -1,0 +1,348 @@
+\chapter{Experiment Results\label{ch:results}}
+\section{The Baseline}
+As described in last section, we know the confidence score returned by the FRS is 97.389 for two identical faces. Here we show an example of a synthesized face and the original face. The confidence score returned by the FRS is 83.25 as shown in the figure~\ref{fig:ch-results:baseline}
+
+
+\begin{figure}[!htb]
+    \begin{center}
+      \includegraphics[width=0.8\textwidth]{ch-results/figure/baseline.png}
+      \caption[Baseline comparison results]
+      {Baseline comparison results}
+      \label{fig:ch-results:baseline}
+    \end{center}
+  \end{figure}
+
+This indicates that for the synthesized faces, the FRS is still able to differentiate them, which serves as the baseline of comparison for all our attacks: Break-in, Impersonation, Evasion. 
+
+\section{Break-in}
+Break-in attacks are one of the most common attacks of FRS. It can pose a threat on current applications that use face recognition as a means of authentication. For example, FRS is used in security check-in as well as unlocking phones. Thus we begin with this attacks and further explore other types of attacks.
+
+As discussed before, the aim of break-in attacks is to be recognized as anyone inside the FRS while the attacker is not registered in such system. 
+
+In this section, we have experimented on the break-in attacks without constraints and with constraints. Initial synthesis parameters $\mathbf{\theta})$ is chosen to be a random vector.
+
+\subsection{Break-in attack without constraints}
+
+First, we have tried to attack the recognizer without setting any bounds for our parameters, which means the optimization is an unconstrained one. Here are the results of the break-in attacks:
+
+
+\begin{table}[!htb]
+    \centering
+
+    \resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|c|c|}
+    \hline
+    Initial vector $\mathbf{\theta}_0$                                                                              & Initial confidence score & Final vector $\mathbf{\theta}$                                          & Final confidence score & Identity            \\ \hline
+    \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}-0.1, 0.1, -0.1, \\ -0.3, 0.4, -0.3{]}\end{tabular}} & \multirow{2}{*}{0.4378}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}1.774, -0.2371, 0.5652, \\ -0.1271, -0.2910, 1.6502{]}\end{tabular}} & \multirow{2}{*}{0.7417}   & \multirow{2}{*}{23} \\
+                                                                                                  &                          &                                                     &                        &                     \\ \hline
+                                                                                                \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}-0.5, -0.1, -0.3, \\ -0.3, 0.1, 0.3{]}\end{tabular}} & \multirow{2}{*}{0.4789}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}0.1826, -0.4302, 0.0028, \\ -0.2363, 1.2863,  2.7397{]}\end{tabular}} & \multirow{2}{*}{0.5780}   & \multirow{2}{*}{04} \\
+                                                                                                  &                          &                                                     &                        &                     \\ \hline
+                                                                                                \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}-0.9, 0.1, 0.1, \\ -0.3, 0.1, 0.3{]}\end{tabular}} & \multirow{2}{*}{0.3779}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}0.7782, -0.3687, -0.6836, \\ -0.5890, 0.0722, 0.2876{]}\end{tabular}} & \multirow{2}{*}{0.6266}   & \multirow{2}{*}{13} \\
+                                                                                                  &                          &                                                     &                        &                     \\ \hline
+    \end{tabular}}
+    \caption[Break-in attacks experimental results without constraints]
+    {Break-in attacks results experimental without constraints}
+    \label{fig:ch-results:break-in_no_constraints}
+\end{table}
+
+From table~\ref{fig:ch-results:break-in_no_constraints}, we can see that it is possible to achieve 0.74 confidence score for break-in attacks. Since it is larger than the ``1e-5" threshold, Face++ platform returns a result with ``same person with highest confidence". 
+
+Figure~\ref{fig:ch-results:break-in-score-no-constraints} shows how the score increases when we run our optimization algorithm to maximize the score. The optimization is able to converge after several iterations.
+
+\begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{ch-results/figure/break-in_no_constraints.png}
+    \caption[Break-in score(no constraints) v.s. iterations]
+    {Break-in score(no constraints) v.s. iterations}
+    \label{fig:ch-results:break-in-score-no-constraints}
+  \end{center}
+\end{figure}
+
+
+
+Figure~\ref{fig:ch-results:break-in_no_bound_success} illustrates an example of successful break-in attacks without constraints. Here the ``target face'' is what we mean the most similar one in the database.  
+
+%side by side 
+\begin{figure}[!htb]
+    \centering
+    \subfloat[Synthesized face]{{\includegraphics[width=6cm]{ch-results/figure/break-in_syn1.png} }}%
+    \qquad
+    \subfloat[Target face(identity 23)]{{\includegraphics[width=6cm]{ch-results/figure/identity_23.png} }}%
+    \caption{Successful break-in attacks without constraints}%
+    \label{fig:ch-results:break-in_no_bound_success}%
+  \end{figure}
+
+Our attacks are susceptible to changes when the initial values of the parameters are different. An we could face some failures even in attacks without constraints. The 2nd and 3rd row of the table~\ref{fig:ch-results:break-in_no_constraints} show an example of unsuccessful break-in attacks.
+
+Figure~\ref{fig:ch-results:break-in_no_bound_failure1} demonstrates an failure of break-in attack that is stuck in the local minimum. This means the optimization algorithm fails to find a better result.
+
+  \begin{figure}[!htb]
+    \centering
+    \subfloat[Synthesized face]{{\includegraphics[width=6cm]{ch-results/figure/break-in_syn2.png} }}%
+    \qquad
+    \subfloat[Target face(identity 13)]{{\includegraphics[width=6cm]{ch-results/figure/identity_04.png} }}%
+    \caption{Failed break-in attacks without constraints due to low confidence score}%
+    \label{fig:ch-results:break-in_no_bound_failure1}%
+  \end{figure}
+
+
+
+Figure~\ref{fig:ch-results:break-in_no_bound_failure2} shows another  failure of break-in attack because the face cannot be detected by the system resulting the failure of face recognition. This happens when we do not have any constraints on the parameters, the face changes dramatically making it detected as no face to the system.
+
+
+  \begin{figure}[!htb]
+    \centering
+    \subfloat[Synthesized face]{{\includegraphics[width=6cm]{ch-results/figure/break-in_syn3.png} }}%
+    \qquad
+    \subfloat[Target face(identity 13)]{{\includegraphics[width=6cm]{ch-results/figure/identity_13.png} }}%
+    \caption{Failed break-in attacks without constraints due to failure of face detection}%
+    \label{fig:ch-results:break-in_no_bound_failure2}%
+  \end{figure}
+
+
+\subsection{Break-in attack with constraints}
+
+To make sure the synthesized faces are realistic. We have decided to use the constrained optimization problem, which is to add a bound for the synthesis parameters $\mathbf{\theta}$. 
+The bound values are set by trial and error since we do not have a theoretical way to determine whether the synthesized faces are realistic. 
+Basically, it is found by observing the extreme values that will make the synthesized faces distorted.
+The bounds b we applied are:
+
+\begin{equation}
+    b=[(-0.5 , 0.5),(-0.5 ,0.5),(-1 , 0.5),(-1 ,0.5),(-0.5 ,0.5),(-0.5 ,0.5)] 
+\end{equation}
+$ \mathbf{\theta}^{T} \in b$ means
+\begin{eqnarray}
+    &{-0.5 \leq m_{1} \leq 0.5}\\
+    &{-0.5 \leq m_{2} \leq 0.5}\\
+    &{-1 \leq c_{1} \leq 0.5}\\
+    &{-1 \leq c_{2} \leq 0.5}\\
+    &{-0.5 \leq e_{1} \leq 0.5}\\
+    &{-0.5 \leq e_{2} \leq 0.5}
+\end{eqnarray}
+
+
+\begin{table}[!htb]
+    \centering
+
+    \resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|c|c|}
+    \hline
+    Initial vector $\mathbf{\theta}_0$                                                                              & Initial confidence score & Final vector $\mathbf{\theta}$                                          & Final confidence score & Identity            \\ \hline
+  \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}0.06, 0.50, 0.41, \\ 0.5, 0.5, 0.39{]}\end{tabular}} & \multirow{2}{*}{0.3584}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}0.4603, -0.4999, -0.4689, \\ 0.1099, 0.4866, .3854{]}\end{tabular}} & \multirow{2}{*}{0.6517}   & \multirow{2}{*}{23} \\
+                                                                                                  &                          &                                                     &                        &                     \\ \hline
+                                                                                                \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}0.26, 0.50, 0.36, \\ 0.5, 0.12, 0.5{]}\end{tabular}} & \multirow{2}{*}{0.3385}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}-0.3614, -0.3980, -0.4958, \\ 0.2422, 0.1152, 0.4982{]}\end{tabular}} & \multirow{2}{*}{0.5934}   & \multirow{2}{*}{22} \\
+                                                                                                  &                          &                                                     &                        &                     \\ \hline
+
+    \end{tabular}}
+    \caption[Break-in attacks with constraints]
+    {Break-in attacks with constraints}
+    \label{fig:ch-results:break-in_with_constraints}
+\end{table}
+
+Table ~\ref{fig:ch-results:break-in_with_constraints} shows one successful and one failed break-in attacks that we have done with different initial parameters.
+
+Figure~\ref{fig:ch-results:break-in-score-constraints} shows a similar pattern as Figure~\ref{fig:ch-results:break-in-score-no-constraints} and the optimization is able to converge as well. Furthermore, we observe that the score jumps up and down quite often, which is quite different from the neural network training when using gradient descent. As the loss usually oscillates in the beginning of the training, and settles down over time.
+
+\begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{ch-results/figure/break-in_constraints.png}
+    \caption[Break-in score(no constraints) v.s. iterations]
+    {Break-in score(with constraints) v.s. iterations}
+    \label{fig:ch-results:break-in-score-constraints}
+  \end{center}
+\end{figure}
+
+
+\begin{figure}[!htb]
+    \centering
+    \subfloat[Synthesized face]{{\includegraphics[width=6cm]{ch-results/figure/break-in_syn4.png} }}%
+    \qquad
+    \subfloat[Target face(identity 23)]{{\includegraphics[width=6cm]{ch-results/figure/identity_23.png} }}%
+    \caption{Successful break-in attacks with constraints}%
+    \label{fig:ch-results:break-in_bound_success}%
+  \end{figure}
+
+
+\begin{figure}[!htb]
+    \centering
+    \subfloat[Synthesized face]{{\includegraphics[width=6cm]{ch-results/figure/break-in_syn5.png} }}%
+    \qquad
+    \subfloat[Target face(identity 22)]{{\includegraphics[width=6cm]{ch-results/figure/identity_22.png} }}%
+    \caption{Failed break-in attacks with constraints }%
+    \label{fig:ch-results:break-in_bound_fail}%
+  \end{figure}
+
+
+
+As we can see from the figure~\ref{fig:ch-results:break-in_no_bound_success}, the synthesized faces using constrained optimization is much more realistic than the previous unconstrained one. However, the confidence score drops from 0.7417 to 0.6517. Though not highly confident, face++ still thinks the synthesized face is the target person.
+
+We have tried several different attacks with different initial parameters. And not every time we can succeed in breaking into the system. Some of the scores are between ``1e-3'' and ``1e-4'' threshold(Table~\ref{fig:ch-methods:face_thresholds}), which indicates the FRS are not so sure about the person identity. 
+
+
+\section{Impersonation}
+Next attack we have experimented on is called impersonation. Impersonation attacks are much harder than break-in attacks, since we would like to be recognized as a specific person inside the database.
+The assumption we make here is that we know someone inside the database and we want to be recognized that person for some purposes. For real world applications, to unlock someone's phone using face recognition or get to a restricted area or access sensitive information that only a particular person have the authorization to access. 
+
+The optimization function is essentially the same as in the break-in attacks. The only difference is that the returned confidence score has to be the score with respect to the person we have chosen to attack. During implementation, we just assume that we know the picture of the face that we are going to attack. Thus we use the face comparison API to get the confidence score of two faces. Strictly speaking, we do not necessarily need to have the picture of face that is enrolled in the system. We only need to know the name of that person and we query the FRS to see whether we are recognized as that person. However, in this case the optimization would be slightly different as there are times the system does not recognize us to the person we intend to impersonate. Then we needs to design a new optimization function to cope with that. Generally, our assumption works fine if the synthesized faces are not similar to another person in the system. However, there are cases where this might fail.
+
+For impersonation attacks, instead of starting from a random vector, we set our initial vector as the vector decomposed using MMDA $\mathbf{\theta}_p$ of that particular person. This is to add our prior knowledge to the optimization problem and reduce the search space to be explored. The assumption her is that in order to impersonate that person, we should inherently bear some similar attributes of that person. Thus we use that vector as the starting point for impersonation attacks.
+
+Furthermore, as we only interested in attacks that using realistic faces. We do not discuss the impersonation attacks without constraints.  Although we have done some experiments, the results are pretty similar as in the break-in attacks. 
+
+Nevertheless, the experiments have shown that even without constraints, we are not able to impersonate everyone inside the database. We believe that it is possibly due to the following reasons:
+
+
+
+\begin{itemize}
+    \item Optimization algorithm is stuck in a local minimum, which means it is possible to succeed but our optimization algorithm fails to find that solution.
+    \item Our search space is not large enough, which means the attributes we use for training are not able to synthesize the attributes that is needed. 
+  \end{itemize} 
+
+\subsection{Impersonation with constraints}
+The results for impersonation are as expected. We can only impersonate only a few persons inside the database. Basically from our observations of the experiments, if we could not find any common facial attributes between the synthesized faces and the target face. We won't be able to fool the system. This explains that for a male attacker, it is very difficult to impersonate a female person, which means attacks across gender are not plausible. However, what we find interesting is that for it is possible to attack across ethnicity, which means an Asian male successfully attacks an African male, as shown in the figure~\ref{fig:ch-results:break-in_bound_success}.
+
+We have experimented several impersonation attacks by choosing different target. We have experimented attacks across gender and across ethnicity. The author tries to attack a female(identity 01) inside the database, the confidence score increases from 0.18 to 0.29. This means the FRS can easily differentiate between the attacker and target.
+As the author is Asian, the confidence score of the attacks on Asian targets are generally higher. We got 0.58 and 0.55 confidence score for attacks on two Asian persons(identity 04 and identity 07 respectively).
+While we only got 0.48 for attacks on one African person(identity 08).
+
+
+% \begin{table}[!htb]
+%   \centering
+
+%   \resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|c|c|}
+%   \hline
+%   Initial vector $\mathbf{\theta}_0$                                                                              & Initial confidence score & Final vector $\mathbf{\theta}$                                          & Final confidence score & Identity            \\ \hline
+% \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}0.06, 0.50, 0.41, \\ 0.5, 0.5, 0.39{]}\end{tabular}} & \multirow{2}{*}{0.3584}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}0.4603, -0.4999, -0.4689, \\ 0.1099, 0.4866, .3854{]}\end{tabular}} & \multirow{2}{*}{0.6517}   & \multirow{2}{*}{23} \\
+%                                                                                                 &                          &                                                     &                        &                     \\ \hline
+%                                                                                               \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}0.26, 0.50, 0.36, \\ 0.5, 0.12, 0.5{]}\end{tabular}} & \multirow{2}{*}{0.3385}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{[}-0.3614, -0.3980, -0.4958, \\ 0.2422, 0.1152, 0.4982{]}\end{tabular}} & \multirow{2}{*}{0.5934}   & \multirow{2}{*}{22} \\
+%                                                                                                 &                          &                                                     &                        &                     \\ \hline
+
+%   \end{tabular}}
+%   \caption[Impersonation attacks with constraints]
+%   {Impersonation attacks with constraints}
+%   \label{fig:ch-results:impersonation_with_constraints}
+% \end{table}
+
+
+\section{Evasion}
+The last attack we have experimented on is evasion. The aim of this attack is to evade from the FRS. Essentially it means that the attacker is already registered in the FRS and wants to avoid being recognized by the system. 
+
+There are several level of evasion in FRS. We called one ``soft evasion'' and another ``hard evasion''. For all evasion attacks the attacker must be registered into the FRS. We use the same set of data but including the author face for all the evasion attacks.  
+
+\begin{itemize}
+  \item Soft evasion: The returned identity by the FRS is not the attacker himself. In this case, by impersonating someone else inside the system is a successful evasion attack.
+  \item Hard evasion: The returned identity by the FRS is not anyone inside the predefined watch list. In the extreme case, the watch list is the whole database, which means the attacker must be not recognized as anyone registered in the FRS. This is a much harder problem, because the attacker must get a low confidence score indicating that not recognized by the FRS.
+\end{itemize}
+We have achieved the confidence score of 0.54987 for our final results and the person id is indeed recognized as the author himself who is already registered in the system. This means the our attackers are a great success. The FRS recognizes the attacker as the person who we would like to perform evasion attacks on. In addition, the confidence score returned by the FRS is so low that the system would think the attacker is actually not anyone inside the system.
+
+This actually fulfills the condition of the hard evasion with everyone inside the system registered in the watch list.
+
+This shows that FRS could be exploited by attackers if someone does not want to be recognized by the system.
+
+
+\begin{figure}[!htb]
+  \centering
+  \subfloat[Synthesized face]{{\includegraphics[width=6cm]{ch-results/figure/evade_syn1.png} }}%
+  \qquad
+  \subfloat[Target face(Author)]{{\includegraphics[width=6cm]{ch-results/figure/identity_me.png} }}%
+  \caption{Successful evasion attacks with constraints }%
+  \label{fig:ch-results:evasion_success}%
+\end{figure}
+
+\section{Break-in and evasion attacks with different database size}
+
+In this section, we studied how different database sizes could affect the break-in and evasion attacks. All the experiments are conducted in the same way as previously described. The only difference is that the number of people in the database varies.
+
+For break-in attacks the database sizes we experimented on are 10, 30, 50, 100, 200. As for evasion attacks, we just added one more people(the author) to each of these databases. 
+
+In addition, in order to reduce the error caused by randomness of our attacks as we initialized the synthesis parameters $\mathbf{\theta}$ randomly. We conducted \textbf{10} attacks for different sizes of the databases.
+
+In general, table ~\ref{fig:ch-results:break-in-database-size} indicates that as the size of the database increases, it is easier for the attacker to break into the system. As shown in the figure ~\ref{fig:ch-results:break-in_score_different_size} the average initial score and maximal final score increase as the size of the database increases. However, we do not observe a drastic increases for average final score as the size of the database increases. This may be due to the capacity of our attack algorithm, which means the our algorithm might not be able to break into the system successfully every time. As a result, the average final score does not increase much. Nevertheless, we observe there is a jump between database with size 10 and the rest.
+\begin{table}[!htb]
+  \centering
+
+  \resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|c|c|}
+  \hline
+  Database Size & Average Initial Score & Average Final Score & Minimal Final Score & Maximal Final Score \\ \hline
+\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{10}\end{tabular}} & \multirow{2}{*}{0.3534}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{0.4860}\end{tabular}} & \multirow{2}{*}{0.4084}   & \multirow{2}{*}{0.5723} \\
+                                                                                                &                          &                                                     &                        &                     \\ \hline
+                                                                                              \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{30}\end{tabular}} & \multirow{2}{*}{0.4131}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{0.6222}\end{tabular}} & \multirow{2}{*}{0.5678}   & \multirow{2}{*}{0.6571} \\
+                                                                                                &                          &                                                     &                        &                     \\ \hline
+                                                                
+                                                                                              \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{50}\end{tabular}} & \multirow{2}{*}{0.4027}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{0.5965}\end{tabular}} & \multirow{2}{*}{0.4878}   & \multirow{2}{*}{0.6736} \\
+                                                                                                &                          &                                                     &                        &                     \\ \hline
+                                                                                              \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{100}\end{tabular}} & \multirow{2}{*}{0.5045}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{0.6115}\end{tabular}} & \multirow{2}{*}{0.5552}   & \multirow{2}{*}{0.6765} \\
+                                                                                                &                          &                                                     &                        &                     \\ \hline
+                                                                                              \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{200}\end{tabular}} & \multirow{2}{*}{0.5107}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{0.6053}\end{tabular}} & \multirow{2}{*}{0.5710}   & \multirow{2}{*}{0.6704} \\
+                                                                                                &                          &                                                     &                        &                     \\ \hline
+                                                                                                
+
+  \end{tabular}}
+  \caption[Break-in attacks with constraints]
+  {Break-in attacks with different database size}
+  \label{fig:ch-results:break-in-database-size}
+\end{table}
+
+%side by side 
+\begin{figure}[!htb]
+  \centering
+   {{\includegraphics[width=7cm]{ch-results/figure/break-in-average.png} }}%
+  \qquad
+  {{\includegraphics[width=7cm]{ch-results/figure/break-in-maximal.png} }}%
+  \caption{Break-in score with different database size}%
+  \label{fig:ch-results:break-in_score_different_size}%
+\end{figure}
+
+
+
+
+Table ~\ref{fig:ch-results:evasion-database-size} does not show a significant difference when changing the database size. From the figure~\ref{fig:ch-results:evasion_score_different_size}, we can see that the score is almost flat as the database size increases. One possible reason is because that the face recognition system always recognize the author as the person with the highest confidence in the database. Therefore, increasing the size of the database does not increase the the chance of being recognized as other persons. 
+
+\begin{table}[!htb]
+  \centering
+
+  \resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|c|c|}
+  \hline
+  Database Size & Average Initial Score & Average Final Score & Minimal Final Score & Maximal Final Score \\ \hline
+\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{10}\end{tabular}} & \multirow{2}{*}{0.8320}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{0.5857}\end{tabular}} & \multirow{2}{*}{0.5411}   & \multirow{2}{*}{0.7651} \\
+                                                                                                &                          &                                                     &                        &                     \\ \hline
+                                                                                              \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{30}\end{tabular}} & \multirow{2}{*}{0.8477}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{0.5832}\end{tabular}} & \multirow{2}{*}{0.4970}   & \multirow{2}{*}{0.7544} \\
+                                                                                                &                          &                                                     &                        &                     \\ \hline
+                                                                
+                                                                                              \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{50}\end{tabular}} & \multirow{2}{*}{0.8430}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{0.5711}\end{tabular}} & \multirow{2}{*}{0.5435}   & \multirow{2}{*}{0.6031} \\
+                                                                                                &                          &                                                     &                        &                     \\ \hline
+                                                                                              \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{100}\end{tabular}} & \multirow{2}{*}{0.8368}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{0.5766}\end{tabular}} & \multirow{2}{*}{0.5295}   & \multirow{2}{*}{0.6098} \\
+                                                                                                &                          &                                                     &                        &                     \\ \hline
+                                                                                              \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{200}\end{tabular}} & \multirow{2}{*}{0.8282}     & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}{0.5944}\end{tabular}} & \multirow{2}{*}{0.5622}   & \multirow{2}{*}{0.7473} \\
+                                                                                                &                          &                                                     &                        &                     \\ \hline
+                                                                                                
+
+  \end{tabular}}
+  \caption[Evasion attacks with constraints]
+  {Evasion attacks with different database size}
+  \label{fig:ch-results:evasion-database-size}
+\end{table}
+
+
+
+
+
+
+\begin{figure}[!htb]
+  \centering
+   {{\includegraphics[width=7cm]{ch-results/figure/evasion-average.png} }}%
+  \qquad
+  {{\includegraphics[width=7cm]{ch-results/figure/evasion-minimal.png} }}%
+  \caption{evasion score with different database size}%
+  \label{fig:ch-results:evasion_score_different_size}%
+\end{figure}
+
+\newpage
+Lastly we plot the IDs that have been successfully broken into for 50 attempted attacks. The IDs are sorted and they are people that the author is recognized as by the facial recognition system. It is interesting to find out that certain people inside that database are picked up by our target when conducting break-in attacks. This demonstrates the limitations of our algorithm that it is not able to attack everyone inside the database. However, only a subset of people in the database can be attacked could still lead to potential security problems for the facial recognition system.
+
+\begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{ch-results/figure/break-in-id.png}
+    \caption[Break-in IDs for 50 attempts]
+    {Break-in IDs for 50 attempts]}
+    \label{fig:ch-results:break-in-ids}
+  \end{center}
+\end{figure}

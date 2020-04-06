@@ -1,0 +1,28 @@
+\chapter{Methodology\label{ch:Methodology}}
+In this thesis, we basically adopt an optimisation based attacks which is to minimize a loss function we defined by generating a series of faces with some specific attributes.
+
+\begin{figure}[!htb]
+    \begin{center}
+      \includegraphics[width=0.7\textwidth]{ch-methods/figure/Iterative_attacks.png}
+      \caption[Iterative adversarial face attacks.]
+      {Iterative adversarial face attacks.}
+      \label{fig:ch-methods:iterative_attack}
+    \end{center}
+\end{figure}
+
+The overall workflow of the attacks is shown above ~\ref{fig:ch-methods:iterative_attack}. We call this an iterative adversarial face attack. The steps are as follows.
+\begin{itemize}
+    \item Given an input image, we use a face synthesizer to generate a synthesized face.
+    \item  Then we fit the face into a FRS which a gallery of $N$ people is already registered.
+    \item After that we get the ID of the people as well as the confidence score.
+    \item Finally we compared the score with a pre-defined threshold to determine whether the attack is successful or not.
+    \item If not, we will go back to the face synthesizer to generate a new face and continue steps. 
+\end{itemize}
+  
+Details of the algorithms as well different types of attacks will be discussed later in this section.
+
+
+
+
+\input{ch-methods/details}
+

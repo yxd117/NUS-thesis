@@ -1,0 +1,240 @@
+\section{Multimodal Discriminant Analysis(MMDA)}
+In this thesis, we follow the method proposed in this paper \textit{Simultaneous and orthogonal decomposition of data using multimodal discriminant analysis}~\cite{sim2009simultaneous}.
+MMDA is able to simultaneously decompose a dataset into different modes that occupies orthogonal subspaces. Here modes refer to different properties that are associated with the data. The most important criteria for choosing different modes is that modes must not exhibit subclass-superclass relationships. For example, we could choose gender, illumination and pose as modes for face images. However, it is not legitimate to consider ethnicity and personal identity as two different modes. It is shown in the paper \textit{Controllable face privacy}~\cite{sim2015controllable}, MMDA can be used to generate faces with different facial attributes. The idea is to use MMDA to reduce the dimension of a face image into meaningful low-dimensional feature parameters. Since each mode can be independently varied, we are able to synthesize new pattern vectors by mapping back to the original high dimensional space.
+
+\begin{figure}[!htb]
+    \begin{center}
+      \includegraphics[width=0.9\textwidth]{ch-methods/figure/MMDA_steps.png}
+      \caption[Main steps of MMDA method]
+      {Main steps of MMDA method}
+      \label{fig:ch-methods:MMDA_steps}
+    \end{center}
+\end{figure}
+
+Figure~\ref{fig:ch-methods:MMDA_steps} indicates the steps on how to use MMDA to synthesize faces with attributes.
+
+In this dissertation, we follow the similar method. The steps are as follows. 
+
+\begin{itemize}
+    \item Face landmarks detection 
+    \item Face alignment with respect to a reference face
+    \item Face normalization by applying a mask to remove hair and background.
+    \item Face encoding of appearance and shape vector.
+    \item MMDA decomposition to get attribute parameters. 
+    \item Controllable parameter synthesis to get synthesized images with facial attributes.
+\end{itemize}
+
+\subsection{MMDA Decomposition}
+\begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=0.6\textwidth]{ch-methods/figure/Attributes_dimension.png}
+    \caption[Orthogonal subspaces of facial attributes]
+    {Orthogonal subspaces of facial attributes}
+    \label{fig:ch-methods:Attributes_dimension}
+  \end{center}
+\end{figure} 
+
+We design 3 types of facial attributes as shown in figure~\ref{fig:ch-methods:Attributes_dimension}. 
+
+
+
+\begin{itemize}
+  \item Makeup: no makeup, with beard, with lipsticks
+  \item Spectacles: no glass, with normal glasses, with sunglasses
+  \item Expressions: normal face, smile face, shock face
+\end{itemize}
+
+
+In order to synthesize faces with attributes, we first need to create a face dataset with face attributes. In our experiment, we have $n=3\times3\times3$ of training faces as shown in the figure~\ref{fig:ch-methods:train_face}. 
+
+\begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{ch-methods/figure/train_face.jpg}
+    \caption[27 faces with different attributes]
+    {27 faces with different attributes}
+    \label{fig:ch-methods:train_face}
+  \end{center}
+\end{figure} 
+
+The rest of notations will be the same as in the paper~\cite{sim2015controllable}. 
+After apply MMDA method, we can obtain the identity spaces of the modes which reveals the class label(identity) of a data point as well as the residual space.
+\begin{equation}
+  \mathbf{V}=\left[\mathbf{V}^{m} \ \mathbf{V}^{s} \ \mathbf{V}^{e} \ \mathbf{V}^{0}\right]
+\end{equation}
+Here $\mathbf{V}^{m}$, $\mathbf{V}^{s}$, $\mathbf{V}^{e}$ are the identity spaces for makeup, spectacles, expressions modes. $\mathbf{V}$ is a $(n\ -\ 1) \times (n\ -\ 1)$. $\mathbf{V}^{0}$ is the residual space and it contains any residual variations that are outside of all the identity spaces we have. More precisely, $\mathbf{V}^{p}$ contains only the discriminant information fo mode $p$ and not other mode. This orthogonality property of the decomposition is what we desired because we want to synthesize faces with different modes.
+Given a new face vector $\mathbf{x}$ and trained original matrix $\mathbf{V}$, we are able to decompose $\mathbf{x}$ into a parameter vector $\mathbf{y}$. 
+
+\begin{equation}
+\mathbf{y}=\mathbf{V}^{\top} \mathbf{P}^{\top} \mathbf{x}
+\end{equation}
+
+Here $\mathbf{P}=\mathbf{U D}^{-1 / 2} $  refers the matrix calculated during the decomposition step. And it is calculated in this way $\mathbf{S}_{t}^{i}=\mathbf{X X}^{\top} =\mathbf{U D U}^{\top} $.  More specifically, the parameter vector can be expressed in such way
+
+\begin{equation}
+\mathbf{y}^{\top}=[\underbrace{\mathbf{m}}_{2 \text { param }} \underbrace{\mathbf{s}^{\top}}_{2 \text { params }} \underbrace{\mathbf{e}^{\top}}_{2 \text { params }} \underbrace{\mathbf{r}^{\top}}_{\text {params }}]  
+\end{equation}
+Where
+
+
+\begin{itemize}
+	\item $m$ can only take on three values that represent no makeup, with beard and with lipsticks
+	\item $s$ can only take on three values that represent no glass, with normal glasses and with sunglasses
+	\item $e$ can only take on three values that represent normal face, smile face and shock face.
+	\item The remaining vector s controls the Residual space.
+\end{itemize}
+
+In thesis, we will modify first 6 parameters to synthesize new face attributes. We define the parameter vector $\theta$ in such way 
+
+\begin{equation}
+  \mathbf{\theta}^{T}=\left[m_{1}\ m_{2}\ c_{1}\ c_{2}\  e_{1}\  e_{2}\right]
+\end{equation}
+In this way, the parameter vector $\mathbf{x}$ can be decomposed as follows
+
+\begin{equation}
+  \mathbf{y}^{T}=\left[\mathbf{\theta} \quad \mathbf{r}^{T}\right]
+\end{equation}
+
+\subsection{MMDA Synthesis}
+Given an altered parameter vector $\tilde{\mathbf{y}}$, synthesis is achieved using  
+
+\begin{equation}
+\tilde{\mathbf{x}}=\mathbf{P}_{r} \mathbf{V} \tilde{\mathbf{y}}
+\end{equation}
+% =\mathbf{Q} \tilde{\mathbf{y}}
+where $\mathbf{P}_{r}$ reverses the whitening and PCA operation of $\mathbf{P}$. 
+
+The new face vector $\tilde{\mathbf{x}}$, which is a linear combination of the semantic faces, is reshaped and dewarped so that we are able to visualize the new face.
+
+%side by side 
+\begin{figure}[!htb]
+  \centering
+  \subfloat[Realistic face]{{\includegraphics[width=6cm]{ch-methods/figure/normal_face.png} }}%
+  \qquad
+  \subfloat[Unrealistic face]{{\includegraphics[width=6cm]{ch-methods/figure/weird_face.png} }}%
+  \caption{Synthesized face with or without parameter constraints}%
+  \label{fig:ch-methods:synthesized-face}%
+\end{figure}
+The figure~\ref{fig:ch-methods:synthesized-face} shows two examples of synthesized faces. The first example is synthesized using the parameters $\mathbf{\theta}^{T} = [0.52,-0.27,0.03,-0.20,-0.17,-0.14]$ whereas the second example is synthesized using parameters $\mathbf{\theta}^{T} = [-0.37,0.02,0.91,0.71,0.14,0.33]$. 
+
+We can see that if we do not constrain our parameters $\mathbf{\theta}^{T}$, we might get the unrealistic faces that we do not desire. Thus it is important for us to set a bounds for the parameters. 
+
+\section{Facial Recognition System(FRS)}
+In this thesis, we choose Face++ as our target FRS to attack.
+Face++ is a cross-platform commercial state-of-the-art
+FRS that is widely used by applications for facial recognition, detection, tracking, and analysis~\cite{sharif2016accessorize}. It has been shown to achieve accuracy over 97.3\% ~\cite{fan2014learning} on the public dataset Labeled Faces in the Wild(LFW)~\cite{huang2008labeled}. 
+
+Basically this system is a score-based system. You are allowed to upload images to the database and we can query the recognition API in the system. The system outputs top five most probable classes of the image in a user registered database along with their confidence scores. Users do not have any information on the model the system is using as well as the precise explanation of the meaning of the confidence scores.
+
+Face++ provide 2 types of recognition: 
+
+\begin{itemize}
+  \item \textbf{Face verification}: Face verification uses Face Compare API. Given two faces, the system outputs a confidence score for the similarity between two faces.
+  \item \textbf{Face identification}: Face verification uses Face Search API. Given a face and a registered database, the system outputs the top five most similar faces inside the database. 
+\end{itemize} 
+
+
+
+
+\begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=1.0\textwidth]{ch-methods/figure/face_compare.png}
+    \caption[face verification in Face++ platform]~\cite{face_plus}
+    {face verification in Face++ platform}
+    \label{fig:ch-methods:face_compare}
+  \end{center}
+\end{figure} 
+
+\begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=.9\textwidth]{ch-methods/figure/face_search.png}
+    \caption[face identification in Face++ platform]~\cite{face_plus}
+    {face identification in Face++ platform}
+    \label{fig:ch-methods:face_search}
+  \end{center}
+\end{figure} 
+
+In our experiments, we created multiple databases inside the Face++ FRS. The main experiment of our attacks are conducted on the database $DB_{35}$ and $DB_{35\_me}$. The $DB_{35}$ is created from the CMU Multi-PIE Face Database~\cite{gross2010multi} which consists of 22 male images and 13 female images. And the $DB_{35\_me}$ is created by adding the author into the database so that the evasion attacks could be carried out.
+
+\begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=.9\textwidth]{ch-methods/figure/db_35_me.jpg}
+    \caption[Face registered in Face++ database]
+    {Face registered in Face++ database}
+    \label{fig:ch-methods:face_db35}
+  \end{center}
+\end{figure} 
+
+The figure~\ref{fig:ch-methods:face_db35}, shows the registered faces in Face++ database. The last row shows a picture of the author which will be used for evasion attacks. 
+
+
+\newpage
+\section{Attack algorithm}
+We make an assumption that we do not have any information on the face recognition models. This is essentially black-box attacks and the general idea of the attack is the model the problem as an optimization problem. So we keep making query to the FRS to generate adversarial examples that is as physically realizable as possible. 
+
+We have conducted three types of attacks:
+\begin{itemize}
+  \item \textit{break-in}: the attacker that is not registered in the system wants to be recognized as anyone inside the system. 
+  \item \textit{impersonation}: the attacker knows one person that is registered in the system and wants to be recognized as that person.
+  \item \textit{evasion}: the attacker is registered in the system but wants to avoid recognized by the system
+\end {itemize}
+
+To better describe the attacks we have experimented, we will name person A as the main attacker for our experiments.
+
+Table~\ref{fig:ch-methods:tb_attacks} shows the database and targets of each attack. 
+\begin{table}[!htb]
+  \centering
+  \begin{tabular}{|c|c|c|}
+  \hline
+  Type of attacks & Database   & Targets             \\ \hline
+  Break-in        & $DB_{35}$     & No specific target  \\ \hline
+  Impersonation   & $DB_{35}$     & 1 particular target \\ \hline
+  Evasion         & $DB_{35\_me}$ & No specific target  \\ \hline
+  \end{tabular}
+  \caption[Three type of attacks]
+  {Three type of attacks}
+  \label{fig:ch-methods:tb_attacks}
+\end{table}
+
+We model the attacks as an optimization problem, in which we have defined distance function that is based on the confidence score returned by the FRS. 
+Let $f(\mathbf{\theta})$ be the confidence score returned by the FRS using the image synthesized with parameters $\mathbf{\theta}$. The confidence score is assumed to be between 0 and 100, with 0 indicating "no confidence" and 100 indicating "highest confidence".
+From the experiments we have done using the Face++ recognition API, we found out two different persons' confidence score ranges from 20 to 40. And when we put exactly same face into the system, we get a confidence score of 97.389.
+
+The distance function is defined as follows
+
+\begin{equation}
+  \operatorname{d}(f(\mathbf{\theta}))=K *\left(\frac{f(\mathbf{\theta})}{100}-t\right)^{2}
+\end{equation}
+where $K = 1000$ and $t = 0.9$. 
+And the optimization problem is defined as follows
+
+\begin{equation}
+  \underset{\mathbf{\theta}}{\operatorname{argmin}} \operatorname{d}(f(\mathbf{\theta}))
+\end{equation}
+
+Here we constrain the optimization problem to be as close as 90 confidence score, which is good enough in our case. 
+
+And during implementation, we use the optimization package from Scipy to help solve the problem. Basically we need to provide a initial value of our synthesis parameters $\mathbf{\theta}$ and a cost function to minimize. Furthermore, we could provide a optional constraints on our parameters, which servers as the bounds of the parameters. 
+
+Our algorithm is to experiments on different initial values as well as the constraints for our parameters. And run the optimization package to get the final synthesized faces. This is a iterative approach and we need to query the FRS to get the returned confidence score.
+
+Here are the thresholds that defined in the Face++ documentation: 
+
+\begin{table}[!htb]
+  \centering
+  \begin{tabular}{|l|l|}
+  \hline
+  Threshold & Score  \\ \hline
+  ``1e-3"    & 62.327 \\ \hline
+  ``1e-4"    & 69.101 \\ \hline
+  ``1e-5"    & 73.975 \\ \hline
+  \end{tabular}
+  \caption[Face++ Thresholds]
+  {Face++ Thresholds}
+  \label{fig:ch-methods:face_thresholds}
+\end{table}
+
+\textit{
+If the confidence does not meet the ``1e-3” threshold, it is highly suggested that the two faces are not from the same person. While if the confidence is beyond the ``1e-5” threshold, there’s high possibility that they are from the same person~\cite{face_plus}.}
+
+Thus from the explanation of the Face++, we aim to synthesize the faces that could meet the ``1e-5'' criteria.
+

@@ -1,0 +1,19 @@
+\chapter{Conclusion and future work\label{ch:conclusion}}
+
+\section{conclusion}
+In this thesis, the main contribution is to explore the vulnerabilities of the current FRS. And we have experimented on three types of attacks: \textit{Break-in}, \textit{Impersonation} \textit and {Evasion}. 
+
+We have succeeded in synthesizing faces which are physical realizable in all three attacks. For these attacks, it is more severe than what we commonly performed adversarial attacks. As it can be applied in real life, it pose more threat on the current face recognition applications. Not to say that the FRS can be fooled by non realistic faces.
+For example, when the attacker knows the vulnerabilities of the FRS, he could use some make-ups or spectacles to access the unauthorized places even under the surveillance of the security guard. And the criminals can be avoid being recognized by the CCTVs. 
+Further, we want to emphasize that our attacks can be applied to any other black box face recognition applications including Face++ as long as any form of similarity score is returned(confidence score in our case).
+
+\section{Future work}
+Although our experiments show a physically realizable attack on FRS, there are inevitably many limitations of our approaches. And there are many possibilities of research area that could be explored. 
+
+Firstly, the MMDA algorithm we used for synthesizing the faces can be improved. Currently the model needs to be trained with different modes in order to synthesize. Thus we need to predefine what are the modes needed to perform attacks. And once the modes are trained, they are all set. We need to retrain a new model for different modes. Alternatively, we could train a model that could synthesize more modes. However, this lead to a larger training dataset as well as a larger search space for the optimization problem. How to choose the modes and whether it is possible to define modes systematically are good research directions.
+
+To be honest, even trying a new way of synthesizing physically realizable faces could make our work better. As our work is quite heavily dependent on the performance of the synthesizer.
+
+Also our work are mainly tested on one commercial platform face++. To better understand the effectiveness of our attacks, more experiments should be carried out on different platforms.
+
+Lastly, after spending so much efforts on experimenting adversarial attacks, the ultimate goal is to build a robust FRS. Thus this thesis did not try to build defensive algorithms. Ant this is a more interesting research waiting for others to explore.

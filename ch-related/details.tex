@@ -1,0 +1,97 @@
+\section{Adversarial Attacks in general}
+Many researchers have been studying on various attacks to generate adversarial examples for deep neural networks. And it is known to all that deep neural networks are susceptible to adversarial examples. Here we review three most of the famous attacks: L-BFGS~\cite{szegedy2013intriguing}, Fast Gradient Sign Method~\cite{kurakin2016adversarial} and Jacobian Based Method~\cite{papernot2016limitations}. Furthermore, we discuss several adversarial attacks in the physical world.
+\subsection{L-BFGS}
+Szegedy~\cite{szegedy2013intriguing} proposed using a box-constrained L-BFGS to solve the optimization problem.
+\begin{eqnarray}
+  {\min _{\mathbf{r}}} & {c \cdot\|r\|_{2}+\mathcal{L}(x+r, l)} \nonumber \\
+  {\text { subject to }} & {x+r\in [0,1]^m}
+\end{eqnarray}
+$c > 0$ is found by performing a linear search and $[0,1]^m$ is the range of pixel values. The task is to find the minimum perturbation $r$ with respect to the original $x$ that is classified as the class $l$. One of the drawbacks of this method is that it is computationally expensive
+while calculating adversarial samples.
+
+\subsection{Fast Gradient Sign Method (FGSM)}
+Goodfellow~\cite{kurakin2016adversarial} pointed out a more efficient method FGSM to generate adversarial examples. It uses the gradient of the loss function with respect to the input of the neural network model. The adversarial examples are generated using the equation below.
+\begin{eqnarray}
+  x_{adv}=x+\epsilon \cdot \operatorname{sign}\left(\nabla_{x} J\left(\theta, x, y_{true}\right)\right)
+\end{eqnarray}
+Here $\theta$ are the model parameters, $J$ is the loss function of the model, $\nabla_{x}$ denotes the gradient of the loss function with respect to the input image $x$ with label $y_{true}$.
+
+\subsection{Jacobian Based Method}
+Papernot~\cite{papernot2016limitations} introduced a different method called Jacobian-based Saliency Map Attack(JSMA). It computes the forward derivative of for the given input $x$, which is essentially the Jacobian of the function corresponding
+to what the neural network learned during training. The knowledge thus obtained is used to craft adversarial samples using a complex saliency map approach. The idea is to use the Jacobian to perturb the input $x$ by finding the input features of $x$ that make the most significant changes to the output.
+
+\subsection{Adversarial Attacks examples}\label{re-examples}
+Here are some examples of adversarial attacks that have been generated throughout the years.
+\begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=140mm]{ch-related/figure/panda.png}
+    \caption[A demonstration of adversarial example]{A demonstration of adversarial example~\cite{goodfellow2014explaining}}
+    \label{fig:ch-related:adv-panda}
+  \end{center}
+\end{figure}
+\\
+As we can see from the figure above, the two pandas look indifferent to our human eyes. Yet, the deep neural networks misclassify the adversarial example as gibbon.
+Another group successfully attacks a phone recognition app using printed version of the object with some noises added on.
+
+\begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{ch-related/figure/washer.png}
+    \caption[A demonstration of adversarial example in the physical world]
+    {A demonstration of adversarial example in the physical world~\cite{kurakin2016physical}}
+    \label{fig:ch-related:washer}
+  \end{center}
+\end{figure}
+A clean image (b) is recognized correctly as a “washer” when perceived through the camera, while adversarial images (c) and (d) are misclassified
+
+Furthermore, another research group showed a successful physical attacks on the stop signs by putting generated black and white stickers. The idea is to design something to mimic graffiti, and thus “hide in the human psyche"~\cite{eykholt2018robust}.
+
+\begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{ch-related/figure/stop.png}
+    \caption[Adversarial attacks on the stop sign]
+    {Adversarial attacks on the stop sign~\cite{eykholt2018robust}}
+    \label{fig:ch-related:adv-stop}
+  \end{center}
+\end{figure}
+
+The left image shows real graffiti on a stop sign,
+something that most humans would not think is suspicious.
+The right image shows our a physical perturbation applied
+to a Stop sign. The systems misclassify the sign on the right as a Speed Limit sign.
+
+\section{Adversarial Face Recognition Attacks}
+Face recognition is one of the most important topics in computer vision. And it is now being used prevalently in all over the world. The face recognition technology has been studied since early 90s  where Turk~\cite{turk1991face} first introduced eigenfaces. This method is based on dimension reduction using Principle Component Analysis (PCA) and it is a traditional machine learning method. However, in the recent years, deep neural networks especially deep convolutional neural networks(CNN) have shown a great improvement on the model performance in the field of face recognition. Moreover, deep learning models have been dominating other machine learning algorithms since 2012 when AlexNet~\cite{krizhevsky2012imagenet} first came out. Deep learning models can achieve a high accuracy up to 99.80\% according to the survey~\cite{wang2018deep}.
+
+However there are undeniable drawbacks for deep learning models as well. For instance, even the performance of state-of-art models can be affected negatively when evaluated on low resolution images ~\cite{massoli2019improving}. In addition, those deep learning models are vulnerable to adversarial attacks. 
+
+In 2016, Researchers in CMU proposed a methods of printing a pair of specially designed eyeglasses frames~\cite{sharif2016accessorize}.
+
+The figure~\ref{fig:ch-related:cmu-face} shows several successful adversarial attacks on face recognition deep learning models. Fig. (a) shows two example of dodging attacks, where both top and bottom faces successfully dodge themselves from the model. Fig. (b), (c), (d) demonstrate impersonation attacks, where the faces from the top are recognized as the faces at the bottom.
+
+
+
+\begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{ch-related/figure/cmu_face.png}
+    \caption[Adversarial attacks on face recognition deep learning models]
+    {Physically realizable face adversarial attacks~\cite{sharif2016accessorize}}
+    \label{fig:ch-related:cmu-face}
+  \end{center}
+\end{figure}
+
+Song~\cite{song2018attacks} proposed an GAN-based attacks that uses attentional variational autoencoder to learn the feature representation of a target model. Their aim is to generate images that is similar to the original faces but classified as the target person. From the figure~\ref{fig:ch-related:attention-face}, the first column is the target face. The 2nd and 4th columns are the original images and the rest are the generated images
+
+\begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{ch-related/figure/attention_face.png}
+    \caption[Adversarial attacks using attentional adversarial attack generative network]
+    {Adversarial attacks using attentional adversarial attack generative network~\cite{song2018attacks}}
+    \label{fig:ch-related:attention-face}
+  \end{center}
+\end{figure}
+
+%Todo
+ \textit{Efficient Decision-based Black-box Adversarial Attacks on Face Recognition}~\cite{dong2019efficient} 
+
+ 
+ Adversarial attacks on face detectors using neural net based constrained optimization~\cite{bose2018adversarial}
