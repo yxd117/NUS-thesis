@@ -346,3 +346,34 @@ Lastly we plot the IDs that have been successfully broken into for 50 attempted 
     \label{fig:ch-results:break-in-ids}
   \end{center}
 \end{figure}
+
+\newpage
+\section{Summary}
+In Summary, we have successfully fooled the face recognition system in terms of the attacks we have defined: \textit{Break-in}, \textit{Impersonation}, \textit{Soft-Evasion}, \textit{Hard-Evasion}.
+More specifically, the attacks are defined as follows:
+
+\begin{itemize}
+  \item \textit{break-in}: The attacker that is not registered in the system wants to be recognized as anyone inside the system. 
+  \item \textit{impersonation}: The attacker knows one person that is registered in the system and wants to be recognized as that person.
+  \item \textit{evasion}: The attacker is registered in the system but wants to avoid recognized by the system.
+  \item \textit{Soft-Evasion}: The returned identity by the FRS is not the attacker himself. 
+  \item \textit{Hard-Evasion}: The returned identity by the FRS is not anyone inside the predefined watch list.
+\end{itemize}
+We can see the summarized results of all the experiments from the table~\ref{fig:ch-results:summary}.
+\begin{table}[!htb]
+  \centering
+
+  \resizebox{0.4\textwidth}{!}{\begin{tabular}{|l|l|}
+  \hline
+  Attack        & Result  \\ \hline
+  \textit{Break-in}     & Success \\ \hline
+  \textit{Impersonation} & Success \\ \hline
+  \textit{Soft-Evasion}  & Success \\ \hline
+  \textit{Hard-Evasion} & Success \\ \hline
+  \end{tabular}}  
+  \caption[Summary of the experiments]
+  {Summary of the experiments}
+  \label{fig:ch-results:summary}
+\end{table}
+
+However we need to discuss on how we perceive ``physically realizable''. As we have stated in the previous section, by meaning ``physically realizable'', we would like the synthesized faces to be representable on people's faces. Taking a successful ``physically realizable'' break-in attack for instance, when we reproduce the synthesized face on a person, the person should be able to recognized by the face recognition system and the security guard would not think that person is suspicious. Thus, in terms of the all the results we have got in all the experiments, we do not think we have reached that goal of realizability yet, as the synthesized faces do not meet the criteria we discussed above . Those attacks are successful in terms of the confidence score we get by querying the face recognition system. In conclusion, we have yet the realizability to work on in the future. 

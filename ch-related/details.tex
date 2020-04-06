@@ -91,7 +91,17 @@ Song~\cite{song2018attacks} proposed an GAN-based attacks that uses attentional 
 \end{figure}
 
 %Todo
- \textit{Efficient Decision-based Black-box Adversarial Attacks on Face Recognition}~\cite{dong2019efficient} 
+ In this paper \textit{Efficient Decision-based Black-box Adversarial Attacks on Face Recognition}~\cite{dong2019efficient}, the author studies the robustness of the state-of-art face recognition models in the decision-based black setting. The attackers have no access to the model parameters and gradient. However, the attackers can query the model and get the predictions. As stated in the paper, this setting is more practical and an evolutionary attack algorithm is proposed to improve the efficiency of the attack. Figure~\ref{fig:ch-related:efficient-black-box} shows an example of generated faces starting from adding the random noises. 
 
- 
- Adversarial attacks on face detectors using neural net based constrained optimization~\cite{bose2018adversarial}
+ \begin{figure}[!htb]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{ch-related/figure/efficient_attack.png}
+    \caption[Examples of dodging and impersonation attacks on face verification]
+    {Examples of dodging and impersonation attacks on face verification~\cite{dong2019efficient}}
+    \label{fig:ch-related:efficient-black-box}
+  \end{center}
+\end{figure}
+
+ \section{Caroline's Adversarial Face Recognition}
+
+In Caroline's work~\cite{astolfi_2018}, physical realizable attacks have been experimented and three major attacks:break-in, impersonation, evasion have been performed. This work differentiate from the related work I have described above in that it studies the faces that is physically realizable in the black box settings. Therefore, unlike adding random noise or modifying the pixels to face images which makes the face indistinguishable for human beings yet being able to fool the face recognition models. This physically realizable faces need to be differentiated by human beings such as security guards and fool the face recognition models. However, Caroline did not succeed in  the evasion attack which she herself was added to the recognition database. Using the same technique proposed by Caroline, We study the three different physical realizable attacks by using a different set of features spaces such as glasses, beards. Moreover, our work extends the work to a different evasion attacks. Lastly, we study how the size of the database influence on the effectiveness of the attacks. 
